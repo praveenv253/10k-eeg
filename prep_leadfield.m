@@ -1,12 +1,12 @@
 %% Define stuff ---------------------------------------------------------------
 
 % load headmodel
-load('concentric_headmodel.mat');
+load('headmodel_new.mat');
 
 % Create sensory space
 sens = [];
 sens.type = 'eeg';
-data = dlmread('points-252.out');
+data = dlmread('points-92.out');
 sens.pnt = 92 * data(:, 3:5);       % Scale all data by 9.2cm (radius of head)
 %sens.ori = sens.pnt ./ ( sqrt(sum(sens.pnt.^2, 2)) * ones(1,3) );
 sens.unit = 'mm';
@@ -31,7 +31,7 @@ cfg.vol = headmodel;
 cfg.elec = sens;
 cfg.unit = 'mm';
 % cfg.grid.pos = dipole_grid;
-cfg.grid.resolution = 10;
+cfg.grid.resolution = 20;
 cfg.grid.unit = 'mm';
 cfg.grid.inside = ones(size(dipole_grid, 1), 1);
 lead_field = ft_prepare_leadfield(cfg);

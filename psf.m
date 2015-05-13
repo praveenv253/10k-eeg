@@ -1,18 +1,27 @@
 %% Create the forward matrices ------------------------------------------------
 
 clear;
-load 'lead_field_252_1212.mat';
+load 'lead_field.mat';
 
 % Read data again, since this is also the normal to the surface
 % No need to use Ted's patch-based method here, because we have a simplistic
 % head model
 % normals = dlmread('points-1212.out');
 % normals = normals(:, 3:5);
-normals = lead_field.cfg.grid.pos / 7.5;
 
-L = zeros(size(sens.pnt, 1), size(dipole_grid, 1));
-for i = 1:size(dipole_grid, 1)
-    forward_matrix = lead_field.leadfield{i};
+num_sensors = size(sens.pnt, 1);
+%num_dipoles = size(dipole_grid, 1);
+num_dipoles = size(lead_field.leadfield(lead_field.inside), 2);
+
+%normals = lead_field.cfg.grid.pos / 7.5;
+dipole_grid = lead_field.pos(lead_field.inside, :);
+normals = dipole_grid ./ (sqrt(sum(dipole_grid.^2, 2)) * ones(1, 3));
+
+L = zeros(num_sensors, num_dipoles);
+lf = lead_field.leadfield(lead_field.inside);
+
+for i = 1:num_dipoles
+    forward_matrix = lf{i};
 	% Compute H(q)m(q): m(q) here are unit radial sources
     forward_matrix = forward_matrix * normals(i, :)';
     L(:, i) = forward_matrix;
@@ -22,12 +31,12 @@ end
 L(isnan(L)) = 0;
 
 % Lets compute the point spread function
-PSF = zeros(size(L, 2), 1);  % Size is equal to the number of dipoles
-BIAS = zeros(size(L, 2), 1);
+PSF = zeros(num_dipoles, 1);  % Size is equal to the number of dipoles
+BIAS = zeros(num_dipoles, 1);
 
 iL = pinv(L);
 
-for i = 1:size(L, 2)
+for i = 1:num_dipoles
     %disp(i);
 	a = iL * L(:, i);
 	if(max(a) > 0)
@@ -57,7 +66,7 @@ figure;
 % colormap(jet);
 % cb = colorbar;
 
-s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 3, log10(PSF));
+s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 30, log10(PSF), 'filled');
 hold on;
 
 s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
@@ -75,15 +84,30 @@ figure;
 % 
 % hold on;
 % 
-% caxis([-max(log10(BIAS)), max(log10(BIAS))]);
-% colormap(jet);
-% cb = colorbar;
 
-s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 3, log10(BIAS));
+s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 30, log10(BIAS), 'filled');
 hold on;
 
 s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
 set(s, 'sizeData', 5);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %% Compute reconstruction for one dipole --------------------------------------
 
