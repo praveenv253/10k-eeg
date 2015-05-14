@@ -1,2 +1,3 @@
-lead_field_92_2136.mat
-lead_field_252_2145.mat
+lead_field_92_2136.mat      # 175 seconds
+lead_field_252_2145.mat     # 471 seconds
+lead_field_492_2145.mat     # 903 seconds
