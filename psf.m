@@ -53,41 +53,75 @@ end
 %% Plot PSF values ------------------------------------------------------------
 
 figure;
-% tr = delaunay(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3));
-% h = trisurf(tr, dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), log10(PSF), 'linestyle', 'none');
-% set(h, 'FaceVertexCData', log10(PSF));
-% xlabel('x');
-% ylabel('y');
-% zlabel('z');
-% 
-% hold on;
-% 
-% caxis([-max(log10(PSF)), max(log10(PSF))]);
-% colormap(jet);
-% cb = colorbar;
 
-s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 30, log10(PSF), 'filled');
+% Plot a scatter plot of dipole voxel points, with colour indicating
+% log-PSF values
+s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 25, log10(PSF), 'filled');
+
+% Set title and axis labels
+title(strcat('Point spread function (on log-scale) for ', num2str(num_sensors), ' sensors'));
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+% Create colorbar
+colormap(jet);
+cb = colorbar;
+
+% Set colorbar ticks manually, for log-scale values
+% Old non-working API
+% ticks = get(cb, 'YTick');
+% new_ticks = 10 .^ ticks;
+% set(cb, 'YTick', new_ticks);
+% set(cb, 'TickLabelsMode', 'manual');
+% ticks = get(cb, 'ticks');
+% tick_labels = {};
+% for i = 1:length(ticks)
+%     tick_labels{i} = [num2str(10.^ticks(i)) 'mm'];
+% end
+% set(cb, 'TickLabels', tick_labels);
+
 hold on;
 
+% Plot sensor positions
 s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
 set(s, 'sizeData', 5);
 
 %% Plot BIAS values -----------------------------------------------------------
 
 figure;
-% tr = delaunay(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3));
-% h = trisurf(tr, dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), log10(BIAS), 'linestyle', 'none');
-% set(h, 'FaceVertexCData', log10(BIAS));
-% xlabel('x');
-% ylabel('y');
-% zlabel('z');
-% 
-% hold on;
-% 
 
-s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 30, log10(BIAS), 'filled');
+% Plot a scatter plot of dipole voxel points, with colour indicating
+% log-bias values
+s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 25, log10(BIAS), 'filled');
+
+% Set title and axis labels
+title(strcat('Bias (on log-scale) for ', num2str(num_sensors), ' sensors'));
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+% Create colorbar
+colormap(jet);
+cb = colorbar;
+
+% Set colorbar ticks manually, for log-scale values
+% Old non-working API
+% ticks = get(cb, 'YTick');
+% new_ticks = 10 .^ ticks;
+% set(cb, 'YTick', new_ticks);
+% New MATLAB graphics API:
+% set(cb, 'TickLabelsMode', 'manual');
+% ticks = get(cb, 'ticks');
+% tick_labels = {};
+% for i = 1:length(ticks)
+%     tick_labels{i} = [num2str(10.^ticks(i)) 'mm'];
+% end
+% set(cb, 'TickLabels', tick_labels);
+
 hold on;
 
+% Plot sensor positions
 s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
 set(s, 'sizeData', 5);
 
