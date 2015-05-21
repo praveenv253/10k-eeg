@@ -1,3 +1,14 @@
+# Latest lead field matrices
+#
+# File name format:
+# lead_field_<num_sensors>_<num_dipoles>.mat
+#
+# ~2145 dipoles in 3D with a resolution of 1cm (dipole spacing)
+# ~17199 dipoles in 3D with a resolution of 0.5cm (dipole spacing)
+#
 lead_field_92_2136.mat      # 175 seconds
 lead_field_252_2145.mat     # 471 seconds
 lead_field_492_2145.mat     # 903 seconds
+lead_field_1212_2145.mat    # 2218 seconds
+lead_field_252_17199.mat    # 3766 seconds
+lead_field_492_17199.mat    # 7216 seconds
