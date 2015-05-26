@@ -34,10 +34,18 @@ L(isnan(L)) = 0;
 PSF = zeros(num_dipoles, 1);  % Size is equal to the number of dipoles
 BIAS = zeros(num_dipoles, 1);
 
+% Noise variance
+sigma_n = abs(max(L(:, 1)));
+
 fInfos = [];
 Bs = [];
 for i = 1:num_dipoles
-    [B,FitInfo] = lasso(L, L(:,i));
+    % Create noise to be added to the measurements
+    %noise = sigma_n .* randn(size(L(:, i)));
+	noise = zeros(size(L(:, i)));
+    measurements = L(:, i) + noise;
+
+    [B,FitInfo] = lasso(L, measurements);
     FitInfo.B = B;
     fInfos = [fInfos; FitInfo];
     disp(i);
