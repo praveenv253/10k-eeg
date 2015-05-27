@@ -39,17 +39,30 @@ sigma_n = abs(max(L(:, 1)));
 
 fInfos = [];
 Bs = [];
-for i = 1:num_dipoles
+K = 2; % number of active dipoles
+for i = 1:5
     % Create noise to be added to the measurements
     %noise = sigma_n .* randn(size(L(:, i)));
 	noise = zeros(size(L(:, i)));
-    measurements = L(:, i) + noise;
+    active_idx = randperm(num_dipoles, K);
+    measurements = sum(L(:, active_idx),2) + noise; % dipole sources at active indices are all set to 1
 
-    [B,FitInfo] = lasso(L, measurements);
+    [B,FitInfo] = lasso(L, measurements, 'CV', 10);
     FitInfo.B = B;
+    FitInfo.I = active_idx;
     fInfos = [fInfos; FitInfo];
     disp(i);
-% 	a = iL * L(:, i);
+    figure;
+    [x,y,z] = sphere; x = x*92; y= y*92; z = z*92;
+    surface(x,y,z,'FaceColor', 'none','EdgeColor','k');
+    
+    hold on;
+    est_active_idx = find(FitInfo.B(:,FitInfo.Index1SE));
+    scatter3(dipole_grid(est_active_idx,1),dipole_grid(est_active_idx,2),dipole_grid(est_active_idx,3), 'b'); % plot estimated dipole sources
+%     scatter3(sens.pnt(:,1), sens.pnt(:,2), sens.pnt(:,3)); 
+    scatter3(dipole_grid(active_idx,1),dipole_grid(active_idx,2),dipole_grid(active_idx,3), 20, 'r', 'filled'); % plot actual sources
+    
+    % 	a = iL * L(:, i);
 % 	if(max(a) > 0)
 % 		a = a ./ max(a);
 % 		d = sqrt(sum( (dipole_grid - ones(size(dipole_grid, 1), 1) * dipole_grid(i, :)).^2, 2 ));
