@@ -1,4 +1,4 @@
-%% Create the forward matrices ------------------------------------------------
+%% Load the forward matrices and compute normal components
 
 clear;
 load 'lead_field_92_2136.mat';
@@ -30,49 +30,79 @@ end
 % There really shouldn't be any nans, right?
 L(isnan(L)) = 0;
 
+% ----- Normal forward matrix computation complete ----- %
+
+%% Select dipoles within a cone
+
+% Cone parameters
+cone_central_vector = [1, 0, 0];
+cone_central_vector = cone_central_vector / norm(cone_central_vector);
+cone_half_angle = 20 * pi / 180;
+
+% Find indices of dipoles within this cone
+% - First find the angle that each dipole position vector makes with the cone's
+%   central vector: cos(<(a, b)) = a.b / |a||b|
+% - Then choose those angles which are less than the half angle of the cone
+angle_with_central_vector = sum(dipole_grid .* (ones(num_dipoles, 1) * cone_central_vector), 2); % Compute dot product
+angle_with_central_vector = angle_with_central_vector ./ sqrt(sum(dipole_grid.^2, 2));           % Divide by norms (cone_central_vector has unit norm)
+in_cone = (angle_with_central_vector > cos(cone_half_angle));                                    % Between 0 and 180, cos is a decreasing fn.
+                                                                                                 % If the angle is less, the cosine of the angle is more.
+dipoles_in_cone = dipole_grid(in_cone, :);
+indices_in_cone = find(in_cone);
+
+% Scatter plot the dipole the grid to see if the indexing worked correctly
+%scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), dipoles_in_cone(:, 3), 30, sqrt(sum(dipoles_in_cone.^2, 2)), 'filled');
+%axis equal;
+
+% ----- Dipole selection complete ----- %
+
+%% Compute MNE inverse solution
+
 % Lets compute the point spread function
 PSF = zeros(num_dipoles, 1);  % Size is equal to the number of dipoles
 BIAS = zeros(num_dipoles, 1);
 
-% Noise variance
+% Noise standard deviation
 sigma_n = abs(max(L(:, 1)));
 
 fInfos = [];
 Bs = [];
-K = 2; % number of active dipoles
-for i = 1:5
+%K = 2; % number of active dipoles
+for i = 1:length(indices_in_cone)
     % Create noise to be added to the measurements
-    %noise = sigma_n .* randn(size(L(:, i)));
-	noise = zeros(size(L(:, i)));
-    active_idx = randperm(num_dipoles, K);
-    measurements = sum(L(:, active_idx),2) + noise; % dipole sources at active indices are all set to 1
+    noise = sigma_n .* randn(size(L(:, indices_in_cone(i))));
+    %noise = zeros(size(L(:, i)));
+
+    %active_idx = randperm(num_dipoles, K);
+    %measurements = sum(L(:, active_idx), 2) + noise; % dipole sources at active indices are all set to 1
+
+    % Create measurements for unit dipoles, which is the same as the lead-field vector at that point
+    measurements = L(:, indices_in_cone(i)) + noise;
 
     [B,FitInfo] = lasso(L, measurements, 'CV', 10);
     FitInfo.B = B;
-    FitInfo.I = active_idx;
+    %FitInfo.I = active_idx;
     fInfos = [fInfos; FitInfo];
     disp(i);
-    figure;
-    [x,y,z] = sphere; x = x*92; y= y*92; z = z*92;
-    surface(x,y,z,'FaceColor', 'none','EdgeColor','k');
 
-    hold on;
-    est_active_idx = find(FitInfo.B(:,FitInfo.Index1SE));
-    scatter3(dipole_grid(est_active_idx,1),dipole_grid(est_active_idx,2),dipole_grid(est_active_idx,3), 'b'); % plot estimated dipole sources
-%     scatter3(sens.pnt(:,1), sens.pnt(:,2), sens.pnt(:,3));
-    scatter3(dipole_grid(active_idx,1),dipole_grid(active_idx,2),dipole_grid(active_idx,3), 20, 'r', 'filled'); % plot actual sources
-
-    % 	a = iL * L(:, i);
-% 	if(max(a) > 0)
-% 		a = a ./ max(a);
-% 		d = sqrt(sum( (dipole_grid - ones(size(dipole_grid, 1), 1) * dipole_grid(i, :)).^2, 2 ));
-% 		PSF(i) = max(d(a > exp(-1)));
-% 		BIAS(i) = mean(d(a == 1));
-% 	else
-% 		PSF(i) = NaN;
-% 		BIAS(i) = NaN;
-% 	end
+    %figure;
+    %[x,y,z] = sphere; x = x*92; y= y*92; z = z*92;
+    %surface(x,y,z,'FaceColor', 'none','EdgeColor','k');
+    %hold on;
+    %est_active_idx = find(FitInfo.B(:,FitInfo.Index1SE));
+    %scatter3(dipole_grid(est_active_idx,1),dipole_grid(est_active_idx,2),dipole_grid(est_active_idx,3), 'b'); % plot estimated dipole sources
+    %%scatter3(sens.pnt(:,1), sens.pnt(:,2), sens.pnt(:,3));
+    %scatter3(dipole_grid(active_idx,1),dipole_grid(active_idx,2),dipole_grid(active_idx,3), 20, 'r', 'filled'); % plot actual sources
 end
+
+% ----- MNE inverse solution complete -----
+
+%% Save results
+save('fInfos.mat', 'fInfos', 'dipole_grid', 'indices_in_cone');
+
+% ----- Done with simulation -----
+
+break;
 
 % %% Plot PSF values ------------------------------------------------------------
 %
