@@ -55,13 +55,13 @@ for i = 1:5
     figure;
     [x,y,z] = sphere; x = x*92; y= y*92; z = z*92;
     surface(x,y,z,'FaceColor', 'none','EdgeColor','k');
-    
+
     hold on;
     est_active_idx = find(FitInfo.B(:,FitInfo.Index1SE));
     scatter3(dipole_grid(est_active_idx,1),dipole_grid(est_active_idx,2),dipole_grid(est_active_idx,3), 'b'); % plot estimated dipole sources
-%     scatter3(sens.pnt(:,1), sens.pnt(:,2), sens.pnt(:,3)); 
+%     scatter3(sens.pnt(:,1), sens.pnt(:,2), sens.pnt(:,3));
     scatter3(dipole_grid(active_idx,1),dipole_grid(active_idx,2),dipole_grid(active_idx,3), 20, 'r', 'filled'); % plot actual sources
-    
+
     % 	a = iL * L(:, i);
 % 	if(max(a) > 0)
 % 		a = a ./ max(a);
@@ -75,23 +75,23 @@ for i = 1:5
 end
 
 % %% Plot PSF values ------------------------------------------------------------
-% 
+%
 % figure;
-% 
+%
 % % Plot a scatter plot of dipole voxel points, with colour indicating
 % % log-PSF values
 % s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 25, log10(PSF), 'filled');
-% 
+%
 % % Set title and axis labels
 % title(strcat('Point spread function (on log-scale) for ', num2str(num_sensors), ' sensors'));
 % xlabel('x');
 % ylabel('y');
 % zlabel('z');
-% 
+%
 % % Create colorbar
 % colormap(jet);
 % cb = colorbar;
-% 
+%
 % % Set colorbar ticks manually, for log-scale values
 % % Old non-working API
 % % ticks = get(cb, 'YTick');
@@ -104,31 +104,31 @@ end
 % %     tick_labels{i} = [num2str(10.^ticks(i)) 'mm'];
 % % end
 % % set(cb, 'TickLabels', tick_labels);
-% 
+%
 % hold on;
-% 
+%
 % % Plot sensor positions
 % s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
 % set(s, 'sizeData', 5);
-% 
+%
 % %% Plot BIAS values -----------------------------------------------------------
-% 
+%
 % figure;
-% 
+%
 % % Plot a scatter plot of dipole voxel points, with colour indicating
 % % log-bias values
 % s0 = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 25, log10(BIAS), 'filled');
-% 
+%
 % % Set title and axis labels
 % title(strcat('Bias (on log-scale) for ', num2str(num_sensors), ' sensors'));
 % xlabel('x');
 % ylabel('y');
 % zlabel('z');
-% 
+%
 % % Create colorbar
 % colormap(jet);
 % cb = colorbar;
-% 
+%
 % % Set colorbar ticks manually, for log-scale values
 % % Old non-working API
 % % ticks = get(cb, 'YTick');
@@ -142,103 +142,103 @@ end
 % %     tick_labels{i} = [num2str(10.^ticks(i)) 'mm'];
 % % end
 % % set(cb, 'TickLabels', tick_labels);
-% 
+%
 % hold on;
-% 
+%
 % % Plot sensor positions
 % s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
 % set(s, 'sizeData', 5);
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
 % %% Compute reconstruction for one dipole --------------------------------------
-% 
+%
 % %dipole_loc = 1000;
-% 
+%
 % %% Find inverse solution
 % %a = iL * L(:, dipole_loc);
 % %% a = a;
-% 
+%
 % %% Plot reconstruction --------------------------------------------------------
-% 
+%
 % %figure;
 % %% [f, v, ~] = surf2patch(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 'triangles');
 % %tr = delaunay(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3));
 % %%h = plot_mesh(v, f)
 % %%hold on;
-% 
+%
 % %% tr = triangulation(f, v);
 % %h = trisurf(tr, dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), a, 'linestyle', 'none');
 % %set(h,'FaceVertexCData', a);
 % %set(h, 'FaceAlpha', .2)
-% 
+%
 % %hold on;
-% 
+%
 % %caxis([-max(abs(a)), max(abs(a))]);
 % %colormap(jet);
 % %cb = colorbar;
-% 
+%
 % %s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k');
 % %s2 = scatter3(dipole_grid(dipole_loc, 1), dipole_grid(dipole_loc, 2), dipole_grid(dipole_loc ,3), 'filled', 'b');
-% 
+%
 % %set(s, 'sizeData', 5);
 % %set(s2, 'sizeData', 30);
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
 % %% Read data again, since this is also the normal to the surface
 % %% No need to use Ted's patch-based method here, because we have a simplistic
 % %% head model
 % %normals = dlmread('points-252.out')
 % %normals = normals(:, 3:5);
-% 
+%
 % %L = zeros(size(sens.pnt, 1), size(dipole_grid, 1));
 % %for i = 1:size(dipole_grid, 1)
 % %    forward_matrix = lead_field.leadfield{i};
 % %    forward_matrix = forward_matrix * normals(i, :)';
 % %    forward_matrices(:, i) = forward_matrix;
 % %end
-% 
+%
 % %%% TODO: Figure out what on earth lst is!! - Done!
 % %%figure;
 % %%p=patch('Faces',head_model.head.faces,'Vertices',head_model.head.vertices);
@@ -251,15 +251,15 @@ end
 % %%    label{idx}=[num2str(length(lst{idx})) '-electrodes'];
 % %%end
 % %%close
-% 
+%
 % %% There really shouldn't be any nans, right?
 % %L(find(isnan(L))) = 0;
-% 
+%
 % %% Lets compute the point spread function
 % %% Let's not do this right off the bat, though.
 % %PSF = zeros(size(L,2));
 % %BIAS = zeros(size(L,2));
-% 
+%
 % %iL = pinv(L);
 % %for i = 1:size(L, 2)
 % %    disp(i);
@@ -274,24 +274,24 @@ end
 % %        BIAS(idx,idx2)=NaN;
 % %    end
 % %end
-% 
+%
 % %% Find inverse solution
 % %a = iL * L(:, idx);
-% 
+%
 % %figure;
-% 
+%
 % %[f, v, ~] = surf2patch(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 'triangles');
 % %%h = plot_mesh(v, f)
 % %%hold on;
-% 
+%
 % %tr = triangulation(f, v);
 % %h = trimesh(tr);
 % %set(h,'FaceVertexCData', a);
-% 
+%
 % %%caxis([-log10(max(a)), log10(max(a))]);
 % %%colormap(jet);
 % %%cb = colorbar;
-% 
+%
 % %s = scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 'filled', 'k')
 % %set(s, 'sizeData', 5)
-% 
+%
