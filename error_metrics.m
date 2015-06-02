@@ -27,8 +27,9 @@ for i = 1:length(indices_in_cone)
 	% Take the lambda corresponding to the minimum bias - somehow, this seems wrong...
 	%final_bias = min(biases);
 	% Or, take the bias corresponding to the minimum MSE
-	final_bias = biases(f.IndexMinMSE);
-	scatter3(dipole_grid(dipole_index, 1), dipole_grid(dipole_index, 2), dipole_grid(dipole_index, 3), 30, final_bias, 'filled');
+	[m, min_mse_index] = min(f.MSE)
+	final_bias = biases(min_mse_index);
+	scatter3(dipole_grid(dipole_index, 1), dipole_grid(dipole_index, 2), dipole_grid(dipole_index, 3), 50, final_bias, 'filled');
 	hold on;
 end
 
