@@ -51,10 +51,10 @@ dipoles_in_cone = dipole_grid(in_cone, :);
 indices_in_cone = find(in_cone);
 disp(length(indices_in_cone))
 
-
 % Scatter plot the dipole the grid to see if the indexing worked correctly
 %scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), dipoles_in_cone(:, 3), 30, sqrt(sum(dipoles_in_cone.^2, 2)), 'filled');
 %axis equal;
+%break;
 
 % ----- Dipole selection complete ----- %
 
@@ -99,7 +99,7 @@ end
 % ----- MNE inverse solution complete ----- %
 
 %% Save results
-save('fInfos.mat', 'fInfos', 'dipole_grid', 'indices_in_cone');
+save('fInfos.mat', 'fInfos', 'dipole_grid', 'indices_in_cone', '-v7.3');
 
 % ----- Done with simulation ----- %
 
