@@ -1,7 +1,7 @@
 %% Load the forward matrices and compute normal components
 
 clear;
-load 'lead_field_92_2136.mat';
+load 'lead_field_92_17141.mat';
 
 % Read data again, since this is also the normal to the surface
 % No need to use Ted's patch-based method here, because we have a simplistic
@@ -49,6 +49,8 @@ in_cone = (angle_with_central_vector > cos(cone_half_angle));                   
                                                                                                  % If the angle is less, the cosine of the angle is more.
 dipoles_in_cone = dipole_grid(in_cone, :);
 indices_in_cone = find(in_cone);
+disp(length(indices_in_cone))
+
 
 % Scatter plot the dipole the grid to see if the indexing worked correctly
 %scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), dipoles_in_cone(:, 3), 30, sqrt(sum(dipoles_in_cone.^2, 2)), 'filled');
@@ -63,15 +65,14 @@ PSF = zeros(num_dipoles, 1);  % Size is equal to the number of dipoles
 BIAS = zeros(num_dipoles, 1);
 
 % Noise standard deviation
-sigma_n = abs(max(L(:, 1)));
+sigma_n = 0.2 * abs(max(L(:, 1)));
 
 fInfos = [];
-Bs = [];
 %K = 2; % number of active dipoles
 for i = 1:length(indices_in_cone)
     % Create noise to be added to the measurements
-    noise = sigma_n .* randn(size(L(:, indices_in_cone(i))));
-    %noise = zeros(size(L(:, i)));
+	noise = sigma_n .* randn(size(L(:, indices_in_cone(i))));
+	%noise = zeros(size(L(:, i)));
 
     %active_idx = randperm(num_dipoles, K);
     %measurements = sum(L(:, active_idx), 2) + noise; % dipole sources at active indices are all set to 1
@@ -79,7 +80,7 @@ for i = 1:length(indices_in_cone)
     % Create measurements for unit dipoles, which is the same as the lead-field vector at that point
     measurements = L(:, indices_in_cone(i)) + noise;
 
-    [B,FitInfo] = lasso(L, measurements, 'CV', 10);
+    [B,FitInfo] = lasso(L, measurements);
     FitInfo.B = B;
     %FitInfo.I = active_idx;
     fInfos = [fInfos; FitInfo];
@@ -95,12 +96,12 @@ for i = 1:length(indices_in_cone)
     %scatter3(dipole_grid(active_idx,1),dipole_grid(active_idx,2),dipole_grid(active_idx,3), 20, 'r', 'filled'); % plot actual sources
 end
 
-% ----- MNE inverse solution complete -----
+% ----- MNE inverse solution complete ----- %
 
 %% Save results
 save('fInfos.mat', 'fInfos', 'dipole_grid', 'indices_in_cone');
 
-% ----- Done with simulation -----
+% ----- Done with simulation ----- %
 
 break;
 
