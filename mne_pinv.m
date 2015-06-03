@@ -1,7 +1,7 @@
 %% Load the forward matrices and compute normal components
 
 clear;
-load 'lead_field_492_2145.mat';
+load 'lead_field_92_2136.mat';
 
 % Read data again, since this is also the normal to the surface
 % No need to use Ted's patch-based method here, because we have a simplistic
@@ -69,44 +69,54 @@ end
 
 % ----- Done with MNE inverse solution ----- %
 
+% Compute indices of one "slice" of the brain
+% This is only for 10mm spacing
+slice = logical((dipole_grid(:, 1) > -5) .* (dipole_grid(:, 1) < 5));
+
 %% Plot PSF
 
 figure;
-scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
-         20, psf, 'filled');
+scatter(dipole_grid(slice, 2), dipole_grid(slice, 3), ...
+        30, psf(slice), 'filled');
+%scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
+%         20, psf, 'filled');
+axis equal;
 
 % Title and axis labels
 title('Width of PSF of reconstruction of a unit dipole at each voxel');
 xlabel('x');
 ylabel('y');
-zlabel('z');
+%zlabel('z');
 
 % Colorbar
 colormap(jet);
 cb = colorbar;
 
 % Plot sensor positions
-hold on;
-scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 5, 'filled', 'k');
+%hold on;
+%scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 5, 'filled', 'k');
 
 %% Plot Bias
 
 figure;
-scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
-         20, bias, 'filled');
+scatter(dipole_grid(slice, 2), dipole_grid(slice, 3), ...
+        30, psf(slice), 'filled');
+%scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
+%         20, bias, 'filled');
+axis equal;
 
 % Title and axis labels
 title('Bias of midpoint of reconstruction of a unit dipole at each voxel');
 xlabel('x');
 ylabel('y');
-zlabel('z');
+%zlabel('z');
 
 % Colorbar
 colormap(jet);
 cb = colorbar;
 
 % Plot sensor positions
-hold on;
-scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 5, 'filled', 'k');
+%hold on;
+%scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 5, 'filled', 'k');
 
 % ----- Done with simulation ----- %
