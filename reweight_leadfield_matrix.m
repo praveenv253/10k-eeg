@@ -33,7 +33,7 @@ L(isnan(L)) = 0;
 %% Normalize the columns of the lead field matrix
 
 for i = 1:num_dipoles
-	L(:, i) = L(:, i) / norm(L(:, i));
+	L(:, i) = L(:, i) ./ norm(L(:, i));
 end
 
 save('reweighted_lead_field.mat', 'L');
