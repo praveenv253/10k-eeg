@@ -42,7 +42,7 @@ psf = zeros(num_dipoles, 1);   % Size is equal to the number of dipoles
 bias = zeros(num_dipoles, 1);
 bias_vec = zeros(num_dipoles, 3);
 
-parfor i = 1:num_dipoles
+for i = 1:num_dipoles
 	disp(i);
 
 	% The sensor values for a unit dipole at the i'th voxel is simply the
@@ -50,9 +50,10 @@ parfor i = 1:num_dipoles
 	measurements = L(:, i);
 
 	% Compute the reconstruction
-	[b, stats] = lasso(L, measurements);
-	[~, min_mse_index] = min(stats.MSE);
-	reconstruction = b(:, min_mse_index);
+	[b, stats] = lasso(L, measurements, 'Lambda', 0.0030);
+	%[~, min_mse_index] = min(stats.MSE);
+	%reconstruction = b(:, min_mse_index);
+	reconstruction = b;
 
 	% Compute psf and bias values
 	if(max(reconstruction) > 0)
