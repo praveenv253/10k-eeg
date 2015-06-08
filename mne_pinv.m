@@ -40,6 +40,7 @@ normals = dipole_grid ./ (sqrt(sum(dipole_grid.^2, 2)) * ones(1, 3));
 % unit dipole at each voxel
 psf = zeros(num_dipoles, 1);   % Size is equal to the number of dipoles
 bias = zeros(num_dipoles, 1);
+bias_vec = zeros(num_dipoles, 3);
 
 % iL is the pseudo-inverse of L: the "reconstruction" matrix, which maps sensor
 % values back to source values
@@ -62,9 +63,11 @@ for i = 1:num_dipoles
 		d = sqrt(sum(d_vec.^2, 2));
 		psf(i) = max(d(reconstruction > exp(-1)));
 		bias(i) = mean(d(reconstruction == 1));
+		bias_vec(i, :) = mean(d_vec(reconstruction == 1, :), 1);
 	else
 		psf(i) = nan;
 		bias(i) = nan;
+		bias_vec(i, :) = nan;
 	end
 end
 
