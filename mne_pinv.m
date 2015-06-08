@@ -104,7 +104,7 @@ cb = colorbar;
 
 figure;
 scatter(dipole_grid(slice, 2), dipole_grid(slice, 3), ...
-        30, psf(slice), 'filled');
+        30, bias(slice), 'filled');
 %scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
 %         20, bias, 'filled');
 axis equal;
