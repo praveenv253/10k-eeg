@@ -1,8 +1,11 @@
+function plot_reconstruction(num_sensors, num_dipoles)
+
 %% Load the forward matrices and compute normal components
 
-clear;
-load 'lead_field_92_2136.mat';
-load 'reweighted_lead_field_92_2136.mat';
+mat1 = sprintf('lead_field_%d_%d.mat', num_sensors, num_dipoles);
+mat2 = sprintf('reweighted_lead_field_%d_%d.mat', num_sensors, num_dipoles);
+load(mat1);
+load(mat2);
 
 % Read data again, since this is also the normal to the surface
 % No need to use Ted's patch-based method here, because we have a simplistic
@@ -10,9 +13,9 @@ load 'reweighted_lead_field_92_2136.mat';
 % normals = dlmread('points-1212.out');
 % normals = normals(:, 3:5);
 
-num_sensors = size(sens.pnt, 1);
+%num_sensors = size(sens.pnt, 1);
 %num_dipoles = size(dipole_grid, 1);
-num_dipoles = size(lead_field.leadfield(lead_field.inside), 2);
+%num_dipoles = size(lead_field.leadfield(lead_field.inside), 2);
 
 %normals = lead_field.cfg.grid.pos / 7.5;
 dipole_grid = lead_field.pos(lead_field.inside, :);
