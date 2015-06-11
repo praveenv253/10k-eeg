@@ -44,7 +44,7 @@ for j = 1:num_in_cone
 	%% Compute the reconstruction
 
 	% Elastic net
-	alpha = 1e-3;
+	alpha = 1e-2;
 	[b, stats] = lasso(L, measurements, 'Alpha', alpha, 'Lambda', 0.1);
 	%[~, lambda_index] = min(stats.MSE);
 	lambda_index = 1;
@@ -61,15 +61,15 @@ end
 
 %% Plot PSF-width and bias
 
-fig = figure;
-fig.Units = 'pix';
-fig.Position = [0, 0, 520, 400];
+psf_fig = figure;
+psf_fig.Units = 'pix';
+psf_fig.Position = [0, 0, 520, 400];
 ax = scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), ...
               dipoles_in_cone(:, 3), 30, psfs, 'filled');
 
 % Axis and view
 axis equal;
-az = -61.5; el = 6;   % Camera view parameters
+az = 9.5; el = 26;   % Camera view parameters
 view(az, el);
 
 % Title and axis labels
@@ -88,18 +88,18 @@ cb = colorbar;
 caxis([0, 70]);
 
 % Save figure
-%filename = sprintf('m%d-alpha-1e-3.png', lambda_index);
-%print(fig, filename, '-dpng', '-r0');
+filename = sprintf('en-psf-%d.png', num_sensors);
+print(psf_fig, filename, '-dpng', '-r0');
 
-fig = figure;
-fig.Units = 'pix';
-fig.Position = [0, 0, 520, 400];
+bias_fig = figure;
+bias_fig.Units = 'pix';
+bias_fig.Position = [0, 0, 520, 400];
 ax = scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), ...
               dipoles_in_cone(:, 3), 30, biases, 'filled');
 
 % Axis and view
 axis equal;
-az = -61.5; el = 6;   % Camera view parameters
+az = 9.5; el = 26;   % Camera view parameters
 view(az, el);
 
 % Title and axis labels
@@ -118,8 +118,8 @@ cb = colorbar;
 caxis([0, 70]);
 
 % Save figure
-%filename = sprintf('m%d-alpha-1e-3.png', lambda_index);
-%print(fig, filename, '-dpng', '-r0');
+filename = sprintf('en-bias-%d.png', num_sensors);
+print(bias_fig, filename, '-dpng', '-r0');
 
 % ----- Done with simulation ----- %
 
