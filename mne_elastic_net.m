@@ -52,7 +52,7 @@ for j = 1:num_in_cone
 	reconstruction = b(:, lambda_index);
 
 	% Compute PSF-width and bias values
-	[psf, bias] = psfbias(dipole_grid, i, reconstruction)
+	[psf, bias] = psfbias(dipole_grid, i, reconstruction);
 	psfs(j) = psf;
 	biases(j) = bias;
 end
@@ -65,7 +65,7 @@ fig = figure;
 fig.Units = 'pix';
 fig.Position = [0, 0, 520, 400];
 ax = scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), ...
-              dipoles_in_cone(:, 3), 20, psfs, 'filled');
+              dipoles_in_cone(:, 3), 30, psfs, 'filled');
 
 % Axis and view
 axis equal;
@@ -73,7 +73,7 @@ az = -61.5; el = 6;   % Camera view parameters
 view(az, el);
 
 % Title and axis labels
-title_text = sprintf(strcat('PSF-width of unit dipoles\n', ...
+title_text = sprintf(strcat('PSF-width of unit dipole reconstruction\n', ...
                             '\\alpha=%f, \\lambda=%f\n', ...
                             '#dipoles=%d, #sensors=%d'), ...
                      alpha, lambda, num_dipoles, num_sensors);
@@ -86,14 +86,41 @@ zlabel('z');
 colormap(jet);
 cb = colorbar;
 caxis([0, 70]);
-%caxis([-3, -1]);
 
-% Plot sensor positions
-%hold on;
-%scatter3(sens.pnt(:,1), sens.pnt(:, 2), sens.pnt(: ,3), 5, 'filled', 'k');
+% Save figure
+%filename = sprintf('m%d-alpha-1e-3.png', lambda_index);
+%print(fig, filename, '-dpng', '-r0');
+
+fig = figure;
+fig.Units = 'pix';
+fig.Position = [0, 0, 520, 400];
+ax = scatter3(dipoles_in_cone(:, 1), dipoles_in_cone(:, 2), ...
+              dipoles_in_cone(:, 3), 30, biases, 'filled');
+
+% Axis and view
+axis equal;
+az = -61.5; el = 6;   % Camera view parameters
+view(az, el);
+
+% Title and axis labels
+title_text = sprintf(strcat('Bias of unit dipole reconstruction\n', ...
+                            '\\alpha=%f, \\lambda=%f\n', ...
+                            '#dipoles=%d, #sensors=%d'), ...
+                     alpha, lambda, num_dipoles, num_sensors);
+title(title_text);
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+% Colorbar
+colormap(jet);
+cb = colorbar;
+caxis([0, 70]);
 
 % Save figure
 %filename = sprintf('m%d-alpha-1e-3.png', lambda_index);
 %print(fig, filename, '-dpng', '-r0');
 
 % ----- Done with simulation ----- %
+
+return
