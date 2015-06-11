@@ -34,24 +34,32 @@ normals = dipole_grid ./ (sqrt(sum(dipole_grid.^2, 2)) * ones(1, 3));
 
 % ----- Normal forward matrix computation complete ----- %
 
-%% Compute MNE inverse solution
+%% Create measurements
 
 % Choose a particular dipole
-%i = 1;     % Shallow
-i = 800;   % Deep
-disp(i);
+i = 1;     % Shallow
+%i = 800;   % Deep
+%disp(i);
+
+% Set noise values
+snr = inf;
+noise = zeros(size(L(:, i)));
+%snr = 10;
+%noise_var = 1.0 / (snr * num_sensors);
+%sigma_n = sqrt(noise_var);
+%noise = sigma_n .* randn(num_sensors, 1);
 
 % The sensor values for a unit dipole at the i'th voxel is simply the
-% normal lead field vector corresponding to the i'th voxel.
-measurements = L(:, i);
+% normal lead field vector corresponding to the i'th voxel, plus noise.
+measurements = L(:, i) + noise;
 
-% Compute the reconstruction
+%% Compute the reconstruction
 
 % Elastic net
-alpha = 1e-2;
-[b, stats] = lasso(L, measurements, 'Alpha', alpha);
+alpha = 1e-3;
+[b, stats] = lasso(L, measurements, 'Alpha', alpha, 'Lambda', 0.1);
 %[~, lambda_index] = min(stats.MSE);
-lambda_index = 35;
+lambda_index = 1;
 lambda = stats.Lambda(lambda_index);
 reconstruction = b(:, lambda_index);
 
@@ -66,7 +74,7 @@ reconstruction = b(:, lambda_index);
 %reconstruction = b;
 
 % Compute psf and bias values
-%[psf, bias] = psfbias(dipole_grid, i, reconstruction)
+[psf, bias] = psfbias(dipole_grid, i, reconstruction)
 
 % ----- Done with MNE inverse solution ----- %
 
@@ -77,6 +85,8 @@ fig.Units = 'pix';
 fig.Position = [0, 0, 520, 400];
 ax = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
               20, reconstruction, 'filled');
+%ax = scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), ...
+              %20, log10(abs(reconstruction)), 'filled');
 
 % Axis and view
 axis equal;
@@ -96,7 +106,8 @@ zlabel('z');
 % Colorbar
 colormap(jet);
 cb = colorbar;
-caxis([-5e-3, 5e-3]);
+caxis([-0.1, 0.1]);
+%caxis([-3, -1]);
 
 % Plot sensor positions
 %hold on;
