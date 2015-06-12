@@ -15,7 +15,7 @@ dipole_grid = lead_field.pos(lead_field.inside, :);
 
 %% Take a subset of dipoles if desired
 
-[indices_in_cone, dipoles_in_cone] = cone_slice(dipole_grid);
+[indices_in_cone, dipoles_in_cone] = cone_slice(dipole_grid, [1 0 0], 15);
 num_in_cone = length(indices_in_cone)
 
 %% MNE inverse solution
@@ -59,6 +59,12 @@ end
 
 % ----- Done with MNE inverse solution ----- %
 
+%% Save results
+
+matfile = sprintf('en-results-%d-%f-%f.mat', num_sensors, alpha, lambda);
+save(matfile, 'psfs', 'biases', 'alpha', 'lambda', 'dipole_grid', ...
+     'indices_in_cone', 'sens');
+
 %% Plot PSF-width and bias
 
 psf_fig = figure;
@@ -75,7 +81,7 @@ view(az, el);
 % Title and axis labels
 title_text = sprintf(strcat('PSF-width of unit dipole reconstruction\n', ...
                             '\\alpha=%f, \\lambda=%f\n', ...
-                            '#dipoles=%d, #sensors=%d'), ...
+                            '#voxels=%d, #sensors=%d'), ...
                      alpha, lambda, num_dipoles, num_sensors);
 title(title_text);
 xlabel('x');
@@ -105,7 +111,7 @@ view(az, el);
 % Title and axis labels
 title_text = sprintf(strcat('Bias of unit dipole reconstruction\n', ...
                             '\\alpha=%f, \\lambda=%f\n', ...
-                            '#dipoles=%d, #sensors=%d'), ...
+                            '#voxels=%d, #sensors=%d'), ...
                      alpha, lambda, num_dipoles, num_sensors);
 title(title_text);
 xlabel('x');

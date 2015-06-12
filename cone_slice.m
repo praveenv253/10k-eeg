@@ -4,13 +4,14 @@ function [indices_in_cone, dipoles_in_cone] = cone_slice(dipole_grid, cone_centr
 num_dipoles = size(dipole_grid, 1);
 
 % Cone parameters
-if (nargin < 2) || (all(shape(cone_central_vector) ~= [1, 3]))
+if (nargin < 2) || (all(size(cone_central_vector) ~= [1, 3]))
 	cone_central_vector = [1, 0, 0];
 end
 cone_central_vector = cone_central_vector / norm(cone_central_vector);
 if nargin < 3
-	cone_half_angle = 20 * pi / 180;
+	cone_half_angle = 20;   % In degrees
 end
+cone_half_angle = cone_half_angle * pi / 180;   % Convert degrees to radians
 
 % Find indices of dipoles within this cone
 % - First find the angle that each dipole position vector makes with the cone's
