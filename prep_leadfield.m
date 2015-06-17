@@ -36,4 +36,4 @@ cfg.grid.unit = 'mm';
 %cfg.grid.inside = ones(size(dipole_grid, 1), 1);
 lead_field = ft_prepare_leadfield(cfg);
 
-save('lead_field.mat', 'lead_field', 'sens');
+save('lead_field.mat', 'lead_field', 'sens', '-v7.3');
