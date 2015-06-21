@@ -44,6 +44,5 @@ cfg.grid.unit = 'mm';
 cfg.grid.inside = 1:size(dipole_grid(min_dipole_num:max_dipole_num, :), 1);
 lead_field = ft_prepare_leadfield(cfg);
 
-filename = sprintf('partial_leadfield_%d_%d.mat', min_dipole_num, ...
-                   max_dipole_num);
+filename = sprintf('partial_leadfield_%d.mat', arg);
 save(filename, 'lead_field', '-v7.3');
