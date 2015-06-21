@@ -10,6 +10,8 @@
 exec_name="run_prep_partial"
 exec_suffix=".sh"
 exec_dir="/afs/ece.cmu.edu/usr/$USER/Public/condor/10k-eeg"
+outfile_prefix="partial_leadfield_"
+outfile_suffix=".mat"
 num_jobs=172
 
 exec_path="$exec_dir/${exec_name}${exec_suffix}"
@@ -47,7 +49,7 @@ i=0
 while [ $i -lt $num_jobs ]; do
 	echo "
 Arguments = $i
-Transfer_Output_Files = test-io-$i.out
+Transfer_Output_Files = ${outfile_prefix}${i}${outfile_suffix}
 Queue" >> $submit_file
 	let i=i+1
 done
