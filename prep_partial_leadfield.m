@@ -1,4 +1,5 @@
-function prep_partial_leadfield(arg)
+function prep_partial_leadfield(num_sensors, num_dipoles, min_dipole_num, ...
+                                max_dipole_num)
 
 %% Define stuff ---------------------------------------------------------------
 
@@ -8,12 +9,13 @@ load('headmodel_new.mat');
 % Create sensory space
 sens = [];
 sens.type = 'eeg';
-data = dlmread('points-252.out');
+sensor_grid_filename = sprintf('points-%d.out', num_sensors);
+data = dlmread(sensor_grid_filename);
 sens.pnt = 92 * data(:, 3:5);       % Scale all data by 9.2cm (radius of head)
 %sens.ori = sens.pnt ./ ( sqrt(sum(sens.pnt.^2, 2)) * ones(1,3) );
 sens.unit = 'mm';
 sens.label{1} = 'ref';
-sens.chantype{1}='ref';
+sens.chantype{1} = 'ref';
 for i = 1:size(sens.pnt, 1)
     sens.label{i} = sprintf('%03d', i);
     sens.chantype{i} = 'eeg';
@@ -24,12 +26,8 @@ sens.chantype = sens.chantype';
 % Define voxel grids
 % data = dlmread('points-1212.out');
 % dipole_grid = 75 * data(:, 3:5);     % Dipoles are inside the head, at r=7.5cm
-load('dipole_grid_17199.mat');
-
-%% Compute dipole range for the given argument --------------------------------
-
-min_dipole_num = 100 * arg + 1;
-max_dipole_num = min(100 * arg + 100, size(dipole_grid, 1));
+dipole_grid_filename = sprintf('dipole_grid_%d.mat', num_dipoles);
+load(dipole_grid_filename);
 
 %% Compute leadfield vectors --------------------------------------------------
 
