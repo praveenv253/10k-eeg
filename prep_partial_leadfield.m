@@ -3,6 +3,9 @@ function prep_partial_leadfield(num_sensors, num_dipoles, min_dipole_num, ...
 
 %% Define stuff ---------------------------------------------------------------
 
+% Assumes fieldtrip is within path
+ft_defaults;
+
 % load headmodel
 load('headmodel_new.mat');
 
@@ -24,8 +27,8 @@ sens.label = sens.label';
 sens.chantype = sens.chantype';
 
 % Define voxel grids
-% data = dlmread('points-1212.out');
-% dipole_grid = 75 * data(:, 3:5);     % Dipoles are inside the head, at r=7.5cm
+%data = dlmread('points-1212.out');
+%dipole_grid = 75 * data(:, 3:5);     % Dipoles are inside the head, at r=7.5cm
 dipole_grid_filename = sprintf('dipole_grid_%d.mat', num_dipoles);
 load(dipole_grid_filename);
 
@@ -42,5 +45,6 @@ cfg.grid.unit = 'mm';
 cfg.grid.inside = 1:size(dipole_grid(min_dipole_num:max_dipole_num, :), 1);
 lead_field = ft_prepare_leadfield(cfg);
 
-filename = sprintf('partial_leadfield_%d.mat', arg);
+filename = sprintf('partial_leadfield_%d_%d.mat', min_dipole_num, ...
+                   max_dipole_num);
 save(filename, 'lead_field', '-v7.3');

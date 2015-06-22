@@ -18,14 +18,26 @@ exec_suffix=""
 exec_dir="/usr/local/bin"
 exec_path="$exec_dir/${exec_name}${exec_suffix}"
 
-# Program arguments
+# Program arguments and output file name
 num_sensors=252
 num_dipoles=17199
+get_min_max_dipole_nums() {
+	# Convert job number into dipole slice to operate upon
+	let "min_dipole_num = 100 * $1 + 1"
+	let "max_dipole_num = 100 * $1 + 100"
+	let "max_dipole_num = (max_dipole_num < num_dipoles) ? max_dipole_num : num_dipoles"
+}
 get_args() {
-	args="-nodesktop -nosplash -r \"userpath('$condor_dir/10k-eeg:$condor_dir/fieldtrip-20150308'); call_prep_partial($num_dipoles, $num_sensors, $1)\""
+	get_min_max_dipole_nums $1
+	common_args="-nodesktop -nosplash -r"
+	userpath_cmd="userpath('$condor_dir/10k-eeg:$condor_dir/fieldtrip-20150308');"
+	prep_leadfield_cmd="prep_partial_leadfield($num_sensors, $num_dipoles, $min_dipole_num, $max_dipole_num);"
+	quit_cmd="quit;"
+	args="$common_args \"$userpath_cmd $prep_leadfield_cmd $quit_cmd\""
 }
 get_outfile_name() {
-	outfile_name="partial_leadfield_${1}.mat"
+	get_min_max_dipole_nums $1
+	outfile_name="partial_leadfield_${min_dipole_num}_${max_dipole_num}.mat"
 }
 
 # Job details
