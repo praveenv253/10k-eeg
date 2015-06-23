@@ -7,7 +7,7 @@ echo "Setting up results directory: $results_dir"
 mkdir -p "$results_dir/$logdir"
 
 # Condor submit file
-submit_file="$results_dir/$exec_name.condor"
+submit_file="$results_dir/$task_name.condor"
 
 # Preamble
 echo "\
