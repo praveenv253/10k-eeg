@@ -22,6 +22,10 @@
 #   A function that accepts the job number (1..$num_jobs), and defines a
 #   variable called `outfile_name`, containing a comma separated list of the
 #   names of output files that the executable produces for that job number.
+# - get_jobspec()
+#   An optional function that accepts the job number (1..$num_jobs), and
+#   defines a variable called `jobspec` that contains a suitable job
+#   description, possibly for parsing while post-processing.
 
 ## Note about file permissions:
 #
@@ -67,6 +71,12 @@ get_args() {
 get_outfile_name() {
 	get_min_max_dipole_nums $1
 	outfile_name="partial_leadfield_${min_dipole_num}_${max_dipole_num}.mat"
+}
+
+# Job description
+get_jobspec() {
+	get_min_max_dipole_nums $i
+	jobspec="$i $min_dipole_num $max_dipole_num"
 }
 
 # Job details

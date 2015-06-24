@@ -9,6 +9,9 @@ mkdir -p "$results_dir/$logdir"
 # Condor submit file
 submit_file="$results_dir/$task_name.condor"
 
+# Job spec file - single file containing exact job descriptions
+jobspec_file="$results_dir/jobspec.txt"
+
 # Indirection script
 # You must be in a directory which has read permissions for system:ece when
 # calling condor_submit.sh, otherwise Condor won't be able to read the
@@ -40,8 +43,23 @@ Notification = ERROR" > $submit_file
 # Job descriptions
 i=0
 while [ $i -lt $num_jobs ]; do
+	# Get job details
 	get_args $i
 	get_outfile_name $i
+	if type get_jobspec | grep -q 'function'; then
+		# Check if a get_jobspec function has been defined. If so, assume
+		# jobspec is defined by get_jobspec.
+		get_jobspec $i
+	else
+		# If no get_jobspec function exists, create a jobspec out of the job
+		# number and the arguments and output files for that job number.
+		jobspec="$i:\n\t$args\n\t$outfile_name\n"
+	fi
+
+	# Save job details
+	echo "$jobspec" >> $jobspec_file
+
+	# Add arguments and output file names to the condor submit file.
 	echo "
 Arguments = \"$exec_path $args\"
 Transfer_Output_Files = $outfile_name
