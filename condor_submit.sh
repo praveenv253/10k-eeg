@@ -43,7 +43,7 @@ while [ $i -lt $num_jobs ]; do
 	get_args $i
 	get_outfile_name $i
 	echo "
-Arguments = \" $exec_path $args \"
+Arguments = \"$exec_path $args\"
 Transfer_Output_Files = $outfile_name
 Queue" >> $submit_file
 	let i=i+1

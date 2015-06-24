@@ -59,13 +59,13 @@ get_min_max_dipole_nums() {
 get_args() {
 	get_min_max_dipole_nums $1
 	common_args="-nodesktop -nosplash -r"
-	userpath_cmd="userpath('$condor_dir/10k-eeg:$condor_dir/fieldtrip-20150308');"
+	userpath_cmd="userpath(''$condor_dir/10k-eeg:$condor_dir/fieldtrip-20150308'');"
 	prep_leadfield_cmd="prep_partial_leadfield($num_sensors, $num_dipoles, $min_dipole_num, $max_dipole_num);"
 	quit_cmd="quit;"
 	# Must double-quote quotes - this is an escaping mechanism in Condor:
 	# Read http://research.cs.wisc.edu/htcondor/manual/v8.2/condor_submit.html,
 	# the section on arguments
-	args="$common_args \"\"$userpath_cmd $prep_leadfield_cmd $quit_cmd\"\""
+	args="$common_args '$userpath_cmd $prep_leadfield_cmd $quit_cmd'"
 }
 get_outfile_name() {
 	get_min_max_dipole_nums $1
