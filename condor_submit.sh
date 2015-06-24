@@ -14,7 +14,9 @@ submit_file="$results_dir/$task_name.condor"
 # calling condor_submit.sh, otherwise Condor won't be able to read the
 # auto-generated indirection script
 indirection_script="run_condor_prog.sh"
-[[ -f $indirection_script ]] || echo "#!/bin/bash\n\n\$@" > $indirection_script
+if [[ ! -f $indirection_script ]]; then
+	echo -e '#!/bin/bash\n\n$@' > $indirection_script
+fi
 
 # Preamble
 echo "\
