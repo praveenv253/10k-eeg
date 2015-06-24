@@ -9,9 +9,16 @@ mkdir -p "$results_dir/$logdir"
 # Condor submit file
 submit_file="$results_dir/$task_name.condor"
 
+# Indirection script
+# You must be in a directory which has read permissions for system:ece when
+# calling condor_submit.sh, otherwise Condor won't be able to read the
+# auto-generated indirection script
+indirection_script="run_condor_prog.sh"
+[[ -f $indirection_script ]] || echo "#!/bin/bash\n\n\$@" > $indirection_script
+
 # Preamble
 echo "\
-Executable = $exec_path
+Executable = $PWD/$indirection_script
 Universe = vanilla
 Getenv = True
 Requirements = (Arch == \"INTEL\" || Arch == \"X86_64\") && OpSys == \"LINUX\"
@@ -28,12 +35,13 @@ Should_Transfer_Files = YES
 When_To_Transfer_Output = ON_EXIT
 Notification = ERROR" > $submit_file
 
+# Job descriptions
 i=0
 while [ $i -lt $num_jobs ]; do
 	get_args $i
 	get_outfile_name $i
 	echo "
-Arguments = \"$args\"
+Arguments = \"$exec_path $args\"
 Transfer_Output_Files = $outfile_name
 Queue" >> $submit_file
 	let i=i+1

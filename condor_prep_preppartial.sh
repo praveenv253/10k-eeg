@@ -4,7 +4,7 @@
 #
 # Executable's details:
 # - exec_path
-#   Full path to the executable
+#   Executable's name if findable by `which`, else full path to the executable
 #
 # Job details:
 # - task_name
@@ -43,8 +43,9 @@ condor_dir="/afs/ece.cmu.edu/usr/$USER/Public/condor"
 # Name of this task - used to name the results folder and the log files.
 task_name="prep_leadfield"
 
-# Path to executable
-exec_path="/usr/local/bin/matlab"
+# Path to executable, or just the file itself, if the shell can find it.
+# This will be called via indirection.
+exec_path="matlab"
 
 # Program arguments and output file names
 num_sensors=252
@@ -61,6 +62,9 @@ get_args() {
 	userpath_cmd="userpath('$condor_dir/10k-eeg:$condor_dir/fieldtrip-20150308');"
 	prep_leadfield_cmd="prep_partial_leadfield($num_sensors, $num_dipoles, $min_dipole_num, $max_dipole_num);"
 	quit_cmd="quit;"
+	# Must double-quote quotes - this is an escaping mechanism in Condor:
+	# Read http://research.cs.wisc.edu/htcondor/manual/v8.2/condor_submit.html,
+	# the section on arguments
 	args="$common_args \"\"$userpath_cmd $prep_leadfield_cmd $quit_cmd\"\""
 }
 get_outfile_name() {
