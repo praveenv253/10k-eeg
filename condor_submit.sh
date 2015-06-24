@@ -10,13 +10,10 @@ mkdir -p "$results_dir/$logdir"
 submit_file="$results_dir/$task_name.condor"
 
 # Indirection script
-# You must be in a directory which has read permissions for system:ece when
-# calling condor_submit.sh, otherwise Condor won't be able to read the
-# auto-generated indirection script
+# You must be in the directory containing this indirection script while
+# sourcing condor_sumbit.sh, because the executable path specification as
+# defined below is dependent on $PWD.
 indirection_script="run_condor_prog.sh"
-if [[ ! -f $indirection_script ]]; then
-	echo -e '#!/bin/bash\n\n$@' > $indirection_script
-fi
 
 # Preamble
 echo "\
@@ -42,16 +39,15 @@ i=0
 while [ $i -lt $num_jobs ]; do
 	get_args $i
 	get_outfile_name $i
-	# Use the old Arguments syntax => don't surround with double quotes
 	echo "
-Arguments = $exec_path $args
+Arguments = \" $exec_path $args \"
 Transfer_Output_Files = $outfile_name
 Queue" >> $submit_file
 	let i=i+1
 done
 
 # Submit to condor
-#condor_submit $submit_file
+condor_submit $submit_file
 
 # Print queue and status
 #condor_q
