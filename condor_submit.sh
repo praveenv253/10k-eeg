@@ -13,6 +13,9 @@ submit_file="$results_dir/$task_name.condor"
 # You must be in the directory containing this indirection script while
 # sourcing condor_sumbit.sh, because the executable path specification as
 # defined below is dependent on $PWD.
+# Further, this directory should have read permissions for system:ece when
+# sourcing condor_submit.sh, otherwise Condor won't be able to read the
+# indirection script.
 indirection_script="run_condor_prog.sh"
 
 # Preamble
