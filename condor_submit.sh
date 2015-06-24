@@ -42,8 +42,9 @@ i=0
 while [ $i -lt $num_jobs ]; do
 	get_args $i
 	get_outfile_name $i
+	# Use the old Arguments syntax => don't surround with double quotes
 	echo "
-Arguments = \"$exec_path $args\"
+Arguments = $exec_path $args
 Transfer_Output_Files = $outfile_name
 Queue" >> $submit_file
 	let i=i+1
