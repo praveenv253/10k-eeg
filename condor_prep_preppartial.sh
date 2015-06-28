@@ -40,6 +40,11 @@
 # - For instance, recursively set condor_dir to have suitable permissions, use:
 #       find $condor_dir -type d -exec fs sa {} system:ece rl \;
 
+## How to source this particular file
+#
+# source condor_prep_preppartial.sh <num_sensors> <num_dipoles> <num_jobs> \
+#                                                         <num_dipoles_per_job>
+
 # Condor directory - directory containing code source repository and other
 # necessary repositories (eg. fieldtrip).
 condor_dir="/afs/ece.cmu.edu/usr/$USER/Public/condor"
@@ -52,12 +57,16 @@ task_name="prep_leadfield"
 exec_path="matlab"
 
 # Program arguments and output file names
-num_sensors=252
-num_dipoles=17199
+# NOTE: This relies on the fact that you can pass arguments while sourcing
+# scripts in bash. This only works in bash, to my knowledge. It certainly won't
+# work in sh.
+num_sensors="$1"
+num_dipoles="$2"
+num_dipoles_per_job="$4"
 get_min_max_dipole_nums() {
 	# Convert job number into dipole slice to operate upon
-	let "min_dipole_num = 100 * $1 + 1"
-	let "max_dipole_num = 100 * $1 + 100"
+	let "min_dipole_num = $num_dipoles_per_job * $1 + 1"
+	let "max_dipole_num = $num_dipoles_per_job * $1 + $num_dipoles_per_job"
 	let "max_dipole_num = (max_dipole_num < num_dipoles) ? max_dipole_num : num_dipoles"
 }
 get_args() {
@@ -80,4 +89,4 @@ get_jobspec() {
 }
 
 # Job details
-num_jobs=172
+num_jobs="$3"
