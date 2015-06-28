@@ -11,7 +11,7 @@ num_jobs = size(jobspec, 1);
 
 % Load the dipole grid and compute normals at each dipole
 dipole_grid_file = sprintf('dipole_grid_%d.mat', num_dipoles);
-dipole_grid = load(dipole_grid_file);
+load(dipole_grid_file);
 normals = dipole_grid ./ (sqrt(sum(dipole_grid.^2, 2)) * ones(1, 3));
 
 % Resultant leadfield matrix
@@ -46,4 +46,6 @@ for i = 1:num_dipoles
 end
 
 % Save the reweighted normal leadfield matrix.
-save('reweighted_lead_field.mat', 'L', '-v7.3');
+reweighted_lf_filename = sprintf('reweighted_lead_field_%d_%d.mat', ...
+                                 num_sensors, num_dipoles);
+save(reweighted_lf_filename, 'L', '-v7.3');
