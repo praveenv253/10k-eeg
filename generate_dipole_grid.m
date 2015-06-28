@@ -22,10 +22,11 @@ dipole_grid = [x, y, z];
 r = sqrt(x.^2 + y.^2 + z.^2);
 dipole_grid = dipole_grid(r <= max_radius, :);
 num_dipoles = size(dipole_grid, 1);
+disp(num_dipoles);
 
 % Save a file containing the grid points and the final number of voxels.
 filename = sprintf('dipole_grid_%d.mat', num_dipoles);
-save(filename, 'dipole_grid', 'num_dipoles', '-v7.3');
+save(filename, 'dipole_grid', '-v7.3');
 
 % Visualize the grid
 %scatter3(dipole_grid(:, 1), dipole_grid(:, 2), dipole_grid(:, 3), 30, ...
