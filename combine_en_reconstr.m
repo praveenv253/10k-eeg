@@ -3,7 +3,7 @@ function combine_en_reconstr(num_sensors, num_dipoles)
 %  matrices it defines. Output the concatenated result.
 
 % Load the jobspec file to get job details
-jobspec_file = sprintf('lead-field-%d-%d/jobspec.txt', ...
+jobspec_file = sprintf('mne-en-%d-%d/jobspec.txt', ...
                        num_sensors, num_dipoles);
 jobspec = dlmread(jobspec_file);
 num_jobs = size(jobspec, 1);
