@@ -59,7 +59,8 @@ end
 
 %% Save results
 
-matfile = sprintf('partial_en_reconstr_%d_%d.mat', min_j, max_j);
+matfile = sprintf('partial_en_reconstr_%d_%d.mat', max(1, min_j), ...
+                  min(num_selected, max_j));
 save(matfile, 'reconstructions', '-v7.3');
 
 return
