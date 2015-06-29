@@ -18,8 +18,8 @@ for i = 1:num_jobs
 	disp(i);
 	
 	% Load the i'th partial reconstruction
-	imin = jobspec(:, 2);
-	imax = jobspec(:, 3);
+	imin = jobspec(i, 2);
+	imax = jobspec(i, 3);
 	filename = sprintf('mne-en-%d-%d/partial_en_reconstr_%d_%d.mat', ...
 	                   num_sensors, num_dipoles, imin, imax);
 	load(filename);  % Defines the variable `reconstructions`
