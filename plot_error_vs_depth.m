@@ -12,7 +12,9 @@ load(dipole_subset_filename);
 num_selected = numel(dipole_subset_indices);
 
 % Compute depths
-depths = sqrt(sum(dipole_grid(dipole_subset_indices, :).^2, 2));
+depths = 80 - sqrt(sum(dipole_grid(dipole_subset_indices, :).^2, 2));
+subsubset = find(depths <= 35);
+depths = depths(subsubset);
 
 % Basic - choose lambda that minimizes MSE
 psfs = zeros(num_selected, 1);
@@ -29,15 +31,33 @@ for i = 1:num_selected
 	biases(i) = bias;
 end
 
+psfs = psfs(subsubset);
+biases = biases(subsubset);
+p = polyfit(depths, psfs, 2);
+
+x = linspace(min(depths), max(depths));
+y = polyval(p, x);
+
 % Plot psf vs depth and bias vs depth
-%scatter(depths, psfs);
+fig = figure;
+fig.Units = 'pix';
+fig.Position = [0, 0, 520, 400];
+scatter(depths+0.1*randn(size(depths)), psfs+0.1*randn(size(psfs)));
+
+hold on;
+plot(x, y, 'r');
+
+xlim([0, 35]);
+ylim([0, 45]);
+fig_filename = sprintf('psf-vs-depth-%d-%d.png', num_sensors, num_dipoles);
+print(fig, fig_filename, '-dpng', '-r0');
 %scatter(depths, biases);
 
 psfs_filename = sprintf('psfs_%d_%d.mat', num_sensors, num_dipoles);
-save(psfs_filename);
+save(psfs_filename, 'psfs', 'depths', 'x', 'y');
 
-biases_filename = sprintf('biases_%d_%d.mat', num_sensors, num_dipoles);
-save(biases_filename);
+%biases_filename = sprintf('biases_%d_%d.mat', num_sensors, num_dipoles);
+%save(biases_filename);
 
-depths_filename = sprintf('depths_%d.mat', num_dipoles);
-save(depths_filename);
+%depths_filename = sprintf('depths_%d.mat', num_dipoles);
+%save(depths_filename, 'depths');
