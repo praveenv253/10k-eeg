@@ -11,6 +11,9 @@ dipole_subset_filename = sprintf('dipole_subset_%d.mat', num_dipoles);
 load(dipole_subset_filename);
 num_selected = numel(dipole_subset_indices);
 
+% Compute depths
+depths = sqrt(sum(dipole_grid(dipole_subset_indices, :).^2, 2));
+
 % Basic - choose lambda that minimizes MSE
 psfs = zeros(num_selected, 1);
 biases = zeros(num_selected, 1);
@@ -27,6 +30,14 @@ for i = 1:num_selected
 end
 
 % Plot psf vs depth and bias vs depth
-depths = sqrt(sum(dipole_grid(dipole_subset_indices, :).^2, 2));
-scatter(depths, psfs);
-scatter(depths, biases);
+%scatter(depths, psfs);
+%scatter(depths, biases);
+
+psfs_filename = sprintf('psfs_%d_%d.mat', num_sensors, num_dipoles);
+save(psfs_filename);
+
+biases_filename = sprintf('biases_%d_%d.mat', num_sensors, num_dipoles);
+save(biases_filename);
+
+depths_filename = sprintf('depths_%d.mat', num_dipoles);
+save(depths_filename);
